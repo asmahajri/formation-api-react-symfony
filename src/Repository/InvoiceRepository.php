@@ -54,13 +54,17 @@ class InvoiceRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Invoice
-//    {
-//        return $this->createQueryBuilder('i')
-//            ->andWhere('i.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findNextChrono($user)
+    {
+        return $this->createQueryBuilder('i')
+              ->select('i.chrono')
+              ->join('i.customer','c')
+              ->andWhere('c.user = :user')
+              ->setParameter('user', $user)
+              ->orderBy('i.chrono','DESC')
+              ->setMaxResults(1)
+              ->getQuery()
+              ->getSingleScalarResult()+1
+       ;
+   }
 }

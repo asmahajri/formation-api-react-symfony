@@ -24,3 +24,12 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Serializer\Normalizer\PatcheDateTimeNormalizer:
         tags: [serializer.normalizer]
+
+        # Uncomment only if autoconfiguration is disabled
+        #arguments: ['@App\State\UserProcessor.inner']
+        #tags: [ 'api_platform.state_processor' ]
+
+    App\State\EventJwtCreated:
+        tags:            
+           - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: updateJwtData }
+     
