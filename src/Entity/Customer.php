@@ -24,7 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * "invoices_get_subresource"={
  * "path"="customers/{id}/invoices"
  * }
- * }
+ * },
+ * collectionOperations={"get", "post"},
+ * itemOperations={"get", "put", "delete"}
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName":"partial","lastName"})
  */
@@ -35,6 +37,7 @@ class Customer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"customers_read","invoices_read"})
      *
      */
     private $id;
