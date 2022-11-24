@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * }},
  * 
  * attributes={
- *  "order"={"customer":"desc"}},
+ *  "order"={"chrono":"desc"}},
  *  normalizationContext={
  *      "groups"={"invoices_read"}
  * })
@@ -55,13 +55,14 @@ class Invoice
      * @ORM\Column(type="float")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
      * @Assert\Type(type="numeric", message="le mountant de a facture doit etre numerique")
+     * @Assert\NotBlank(message="le montant  est obligatoire")
      */
+
     private $amount;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"invoices_read","customers_read"})
-     * @Assert\NotBlank(message="la date est obligatoire")
      * @Assert\Type(type="DateTime",message="merci de saisir une date valide")
      */
     private $sentAt;
@@ -84,7 +85,6 @@ class Invoice
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read","customers_read"})
-     * @Assert\NotBlank(message="le chrono  est obligatoire")
      * @Assert\Type(type="integer", message="le chrono  doit etre un entier ")
      */
     private $chrono;

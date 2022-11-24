@@ -3,6 +3,8 @@ import React,{useState,useEffect,useContext} from "react";
 import axios from "axios";
 import AuthAPI from "../services/AuthAPI";
 import AuthContext from "../contexts/AuthContext";
+import Field from "../components/forms/Field";
+import { toast } from "react-toastify";
 
 
 const LoginPage= ({history}) => {
@@ -30,23 +32,22 @@ const [error,setError]=useState('');
         try{
           await AuthAPI.autenticate(credentials);
           setIsAuthenticated(true);
-          history.replace("/customers");
           setError("");
+          history.replace("/customers");
+          toast.success('Vous étes désormais connecté !')
         }catch(error){
            setError("aucun compte ne possed cette adresse email ou alors les informations ne correspondent pas !");
-        }
+           toast.error("une erreur est survenue");
+          }
     }
 
     return (<>
                <h1 className="text-center">Connexion a l'application</h1>
                <form  className="form-group" onSubmit={handleSubmit}>
 
-                 <label htmlFor="email">Email</label>
-                 <input type="email" value={credentials.username} onChange={handleChange} className={"form-control" + (error && " is-invalid")} name="username" id="username" placeholder="Email"/>
-                  <p className="invalid-feedback">{error}</p>
-                 <label htmlFor="password">Mot de passe</label>
-                 <input type="password" value={credentials.password} onChange={handleChange} className="form-control" name="password" id="password" placeholder="Mot de passe"/>
-               
+                  <Field name="username" label="Email" value={credentials.username} onChange={handleChange} placeholder="Email" type="email" error={error}/>
+                  <Field name="password" label="Mot de passe" value={credentials.password} onChange={handleChange}  type="password" />
+              
                  <div className="form-group">
                      <button className="btn btn-success">Connexion</button>
                  </div>

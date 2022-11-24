@@ -44,7 +44,7 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY , methods: [GET,PUT,DELETE]  }
         - { path: ^/api/customers,       roles: IS_AUTHENTICATED_FULLY}
-        - { path: ^/api/invoices,       roles: IS_AUTHENTICATED_Fully }
+        - { path: ^/api/invoices,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

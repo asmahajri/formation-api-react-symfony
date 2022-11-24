@@ -2,12 +2,17 @@ import React, { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import InvoicesAPI from "../services/InvoicesAPI";
 import moment from "moment";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const InvoicesPage = (props) => {
   const itemsPerPage = 30;
   const [invoices, setInvoices] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const[loading,setLoading]=useState(true);
+
   const STATUS_CLASSES = {
     PAID: "success",
     SENT: "info",
@@ -25,6 +30,7 @@ const InvoicesPage = (props) => {
       const data = await InvoicesAPI.findAll();
       console.log(data);
       setInvoices(data);
+      setLoading(false);
     } catch (error) {
       console.log(error.response);
     }
@@ -33,6 +39,7 @@ const InvoicesPage = (props) => {
   // Charger les invoices au chargement du composant
   useEffect(() => {
     fetchInvoice();
+    setLoading(true);
   }, []); // utuliser cette methode cas en peut pas utiliser des async dans useEffect
 
   // Gestion de la suppression d'une facture
@@ -45,10 +52,15 @@ const InvoicesPage = (props) => {
     //3. la soltion est le mixer les deux approche cacher le client avant la suppression puis en cas d'erreur retourne la copie de tableau cutomers
     try {
       await InvoicesAPI.delete(id); // en cas de success
+      toast.success('La facture a bien été supprimée',{
+        position:toast.POSITION.BOTTOM_RIGHT
+
+      })
     } catch (error) {
       // en cas d'erreur
       setInvoices(originalInvoices);
       console.log(error.response);
+      toast.error('erreur est servenue lors de la suppression de a facture')
     }
   };
 
@@ -96,9 +108,11 @@ const InvoicesPage = (props) => {
         />
       </div>
 
-      <h1>Liste des Factures {invoices.length}</h1>
+      <h1>Liste des Factures {invoices.length}
 
-      <table className="table table-hover">
+      <Link to="/invoices/new" className="mb-3 btn btn-primary">Création Facture</Link>
+      </h1>
+      {!loading && <table className="table table-hover">
         <thead>
           <tr>
             <th>Numéro</th>
@@ -116,9 +130,9 @@ const InvoicesPage = (props) => {
               <tr key={invoice.id}>
                 <td>{invoice.chrono}</td>
                 <td>
-                  <a href="#">
+                  <Link to={"/customers/"+invoice.customer.id}>
                     {invoice.customer.firstName} {invoice.customer.lastName}
-                  </a>
+                  </Link>
                 </td>
                 <td>{invoice.amount.toLocaleString()} $</td>
                 <td>{formatDate(invoice.sentAt)}</td>
@@ -130,7 +144,7 @@ const InvoicesPage = (props) => {
                   </span>
                 </td>
                 <td>
-                  <button className="btn btn-primary">Edit</button>
+                  <Link className="btn btn-primary" to={"/invoices/"+ invoice.id}>Edit</Link>
                   <button
                     onClick={() => handleDelete(invoice.id)}
                     className="btn btn-danger"
@@ -142,7 +156,7 @@ const InvoicesPage = (props) => {
             );
           })}
         </tbody>
-      </table>
+      </table>|| <TableLoader />}
 
       {itemsPerPage < filteredInvoices.length && (
         <Pagination

@@ -18,6 +18,12 @@ import LoginPage from "./pages/LoginPage";
 import AuthAPI from "./services/AuthAPI";
 import AuthContext from "./contexts/AuthContext";
 import PrivateRoot from "./components/PrivateRoot";
+import CustomerPage from "./pages/CustomerPage";
+import InvoicePage from "./pages/InvoicePage";
+import RegisterPage from "./pages/RegisterPage";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+
 
 
 AuthAPI.setUp(); // verifier la connexion est valide ou non
@@ -42,13 +48,19 @@ const App = () => {
       <NavBarWithRouter/>
       <main className="container pt-5">
         <Switch>
+          <PrivateRoot path="/customers/:id" component={CustomerPage}/>
           <PrivateRoot path="/customers" component={CustomersPage} />
+
           <Route path="/login" component={LoginPage}/>
+          <Route path="/register" component={RegisterPage}/>
+          <PrivateRoot path="/invoices/:id" component={InvoicePage} />
           <PrivateRoot path="/invoices" component={InvoicesPage}/>
           <Route path="/" component={HomePage} />
         </Switch>
       </main>
     </HashRouter>
+
+    <ToastContainer position={toast.POSITION.BOTTOM_LEFT}/>
     </AuthContext.Provider>
 
   );

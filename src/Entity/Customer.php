@@ -46,7 +46,7 @@ class Customer
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read","invoices_read"})
      * @Assert\NotBlank(message="le prenom est obligatoir")
-     * @Assert\Length(min=3, minMessage="la longeur de prenom doit étre entre 3 et 255",max=255,maxMessage="la longeur de prenom doit étre entre 3 et 255")
+     * @Assert\Length(min=3, minMessage="la longeur de prenom doit étre entre 3 et 255",max=255,maxMessage="la longeur de prenom doit étre entre 3 et 255", allowEmptyString=true)
      */
     private $firstName;
 
@@ -54,6 +54,7 @@ class Customer
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read","invoices_read"})
      * @Assert\NotBlank(message="le nom est obligatoir")
+     *@Assert\Length(min=3, minMessage="la longeur de nom doit étre entre 3 et 255",max=255,maxMessage="la longeur de nom doit étre entre 3 et 255", allowEmptyString=true)
      */
     private $lastName;
 

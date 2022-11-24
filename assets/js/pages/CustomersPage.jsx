@@ -1,8 +1,9 @@
-import axios from "axios";
 import React ,{useEffect,useState} from "react";
-import { async } from "regenerator-runtime";
 import Pagination from "../components/Pagination";
 import CustomersAPI from "../services/CustomersAPI";
+import { Link, NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 
 
@@ -13,15 +14,17 @@ const CustomersPage = (props) => {
     const[customers,setCustomers]=useState([]);
     const [currentPage,setCurrentPage]=useState(1);
     const [search, setSearch]=useState('');
+    const[loading,setLoading]=useState(true);
 
 
     const fetchCustomer =async()=>{
        try{
         const data=await CustomersAPI.findAll();
-        console.log(data)
         setCustomers(data);
+        setLoading(false);
        }catch(error){
         console.log(error.response)
+        toast.error('Erreur lors de chargement des clients')
        }
     }
 
@@ -40,10 +43,12 @@ const CustomersPage = (props) => {
            //3. la soltion est le mixer les deux approche cacher le client avant la suppression puis en cas d'erreur retourne la copie de tableau cutomers
          try{
            await CustomersAPI.delete(id); // en cas de success
+           toast.success('Le client a bien été supprimé')
          }catch(error){
              // en cas d'erreur
             setCustomers(originalCustomers)
             console.log(error.response)
+            toast.error('un erreur est servenue lors de suppression de client')
          }
         
         }
@@ -72,9 +77,14 @@ const CustomersPage = (props) => {
            <input type="text" onChange={handleSearch} value={search} className="form-control" placeholder="Rechercher..." />
        </div>
 
-            <h1>Liste des clients {customers.length}</h1>
+         <div className="mb-3 d-flex justify-content-between align-items-center">
+         <h1>Liste des clients {customers.length}</h1>
+         <Link to="/customers/new" className="btn btn-primary">
+          Créer un client
+        </Link>         
+        </div>
            
-            <table className="table table-hover">
+            {!loading && <table className="table table-hover">
                <thead>
                    <tr>
                        <th>Id</th>
@@ -91,12 +101,14 @@ const CustomersPage = (props) => {
                         return(
                          <tr key={customer.id}>
                             <td>{customer.id}</td>
-                            <td><a href="#">{customer.firstName} {customer.lastName}</a></td>
+                            <td><Link to={"customers/"+customer.id}>{customer.firstName} {customer.lastName}</Link></td>
                             <td>{customer.email}</td>
                             <td>{customer.company}</td>
                              <td>{customer.invoices.length}</td>
                              <td>{customer.totalAmount.toLocaleString()} $</td>
-                             <td><button onClick={()=>handleDelete(customer.id)} disabled={customer.invoices.length>0} className="btn btn-danger">supprimer</button></td>
+                             <td><button onClick={()=>handleDelete(customer.id)} disabled={customer.invoices.length>0} className="btn btn-danger">Supprimer</button>
+                             <Link   to={"/invoices/" +customer.id+ "/new"}>Facture</Link></td>
+                        
                          </tr>
                         )
 
@@ -104,7 +116,8 @@ const CustomersPage = (props) => {
                       
                    </tbody>
 
-            </table>
+            </table>||
+            <TableLoader />}
     
 
         {itemsPerPage<filteredCustomers.length && <Pagination
