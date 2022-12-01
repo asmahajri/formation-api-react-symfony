@@ -28,7 +28,6 @@ const InvoicesPage = (props) => {
   const fetchInvoice = async () => {
     try {
       const data = await InvoicesAPI.findAll();
-      console.log(data);
       setInvoices(data);
       setLoading(false);
     } catch (error) {

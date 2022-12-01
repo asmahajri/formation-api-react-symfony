@@ -9,7 +9,7 @@ import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = (props) => {
     
-    const itemsPerPage=10;
+    const itemsPerPage=20;
     
     const[customers,setCustomers]=useState([]);
     const [currentPage,setCurrentPage]=useState(1);
@@ -47,7 +47,6 @@ const CustomersPage = (props) => {
          }catch(error){
              // en cas d'erreur
             setCustomers(originalCustomers)
-            console.log(error.response)
             toast.error('un erreur est servenue lors de suppression de client')
          }
         

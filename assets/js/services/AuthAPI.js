@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import {LOGIN_API} from "../config";
 
 // Deconnexion (suppressionde token de local storage et axios)
 
@@ -12,7 +13,7 @@ function logout(){
 // requete HTTP d'authentification et stockage de token dans local storage et sur axios
 function autenticate(credentials){
 
-    return axios.post("http://127.0.0.1:8000/api/login_check",credentials)
+    return axios.post(LOGIN_API,credentials)
     .then(response=>response.data.token).
     then(token=>{
      window.localStorage.setItem("authToken",token);// stoker le token dans local storage de serveur
